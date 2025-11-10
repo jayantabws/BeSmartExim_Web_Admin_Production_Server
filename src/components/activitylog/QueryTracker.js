@@ -70,8 +70,7 @@ const QueryTracker = () => {
       params.append('fromDate', fromDate);
     }
     if (toDate) {
-      if(!fromDate){
-       
+      if(!fromDate){    
          setLoading(false);
         return;
       }
@@ -82,13 +81,13 @@ const QueryTracker = () => {
       url += `?${params.toString()}`;
     }
 
-    console.log("Query Count URL:", url);
+    //console.log("Query Count URL:", url);
 
     Axios({
       method: "GET",
       url: url,
     }).then((res) => {
-        console.log("Count Res > >>", res);
+       // console.log("Count Res > >>", res);
         if (res.data && res.status === 200) {
           setTotalCount(res.data || 0);
         }
@@ -151,7 +150,7 @@ const QueryTracker = () => {
     
     url = `search-management/search/listAllnew?${params.toString()}`;
 
-    console.log("Query List URL:", url);
+   // console.log("Query List URL:", url);
 
     Axios({
       method: "GET",
@@ -161,14 +160,14 @@ const QueryTracker = () => {
       },
     })
       .then((res) => {
-        console.log("URL", url);
-        console.log("Query List", res.data.queryList);
-        console.log("Data Length ", res.data.queryList?.length || 0);
+       // console.log("URL", url);
+       // console.log("Query List", res.data.queryList);
+       // console.log("Data Length ", res.data.queryList?.length || 0);
         setQueryList(res.data.queryList || []);
         setCurrentPage(page);
           // If no data is returned, make sure count is also 0
         if (res.data.queryList?.length === 0 && page === 1) {
-          console.log("No data found, ensuring count is 0");
+        //  console.log("No data found, ensuring count is 0");
           setTotalCount(0);
         }
       })
