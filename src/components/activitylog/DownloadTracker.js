@@ -77,14 +77,14 @@ const DownloadTracker = () => {
       
       url = `/search-management/search/countAllnew?${params.toString()}`;
 
-      console.log("Download Count URL:", url);
+     // console.log("Download Count URL:", url);
       
       const res = await Axios({
         method: "GET",
         url: url,
       });
 
-      console.log("Download Count Response:", res.data);
+      //console.log("Download Count Response:", res.data);
       
       if (res.status === 200) {
         let count = 0;
@@ -103,10 +103,10 @@ const DownloadTracker = () => {
           count = res.data || 0;
         }
         
-        console.log("Setting download total count to:", count);
+       // console.log("Setting download total count to:", count);
         setTotalCount(count);
       } else {
-        console.log("Non-200 response, setting count to 0");
+       // console.log("Non-200 response, setting count to 0");
         setTotalCount(0);
       }
     } catch (err) {
@@ -134,7 +134,7 @@ const DownloadTracker = () => {
         
         if (fallbackRes.status === 200) {
           let count = fallbackRes.data || 0;
-          console.log("Setting download total count (fallback) to:", count);
+         // console.log("Setting download total count (fallback) to:", count);
           setTotalCount(count);
         }
       } catch (fallbackErr) {
@@ -198,7 +198,7 @@ const DownloadTracker = () => {
     
     url = `search-management/search/listAllnew?${params.toString()}`;
 
-    console.log("Download List URL:", url);
+    //console.log("Download List URL:", url);
 
     Axios({
       method: 'GET',
@@ -208,9 +208,9 @@ const DownloadTracker = () => {
       },
     })
       .then((res) => {
-        console.log("Download URL", url);
-        console.log("Download List", res.data.queryList);
-        console.log("Download Data Length ", res.data.queryList?.length || 0);
+       // console.log("Download URL", url);
+       // console.log("Download List", res.data.queryList);
+       // console.log("Download Data Length ", res.data.queryList?.length || 0);
         
         const queryData = res.data.queryList || [];
         setQueryList(queryData);
@@ -218,12 +218,12 @@ const DownloadTracker = () => {
         
         // If no data is returned, make sure count is also 0
         if (queryData.length === 0 && page === 1) {
-          console.log("No data found, ensuring count is 0");
+          //console.log("No data found, ensuring count is 0");
           setTotalCount(0);
         }
       })
       .catch((err) => {
-        console.log('Err', err);
+       // console.log('Err', err);
         setQueryList([]);
         // Reset count to 0 when there's an error
         setTotalCount(0);
