@@ -160,10 +160,22 @@ const QueryTracker = () => {
       },
     })
       .then((res) => {
-       // console.log("URL", url);
-       // console.log("Query List", res.data.queryList);
-       // console.log("Data Length ", res.data.queryList?.length || 0);
-        setQueryList(res.data.queryList || []);
+      const queryData = res.data.queryList || [];
+
+        // Format the data with date/time separation (similar to LoginTracker)
+        const formattedList = queryData.map((item, index) => {
+          const created = formatDateTime(item.createdDate);
+
+          return {
+            ...item,
+            // Ensure we have a unique key field
+            searchId: item.searchId || `query-${page}-${index}`,
+            createdDateOnly: created.date,
+            createdTimeOnly: created.time
+          };
+        });
+
+        setQueryList(formattedList);
         setCurrentPage(page);
           // If no data is returned, make sure count is also 0
         if (res.data.queryList?.length === 0 && page === 1) {
@@ -271,6 +283,36 @@ const QueryTracker = () => {
   
       setFieldValue(field, value);
     };
+
+
+    const formatDateTime = (dateString) => {
+  // If dateString contains a full ISO datetime, parse it
+  if (dateString && (dateString.includes('T') || dateString.includes('Z'))) {
+    const dateObj = moment(dateString);
+    if (dateObj.isValid()) {
+      return { 
+        date: dateObj.format("DD/MM/YYYY"), 
+        time: dateObj.format("hh:mm A") 
+      };
+    }
+  }
+  
+  // Handle single date string
+  if (dateString) {
+    if (dateString.includes('T') || dateString.includes(' ')) {
+      const dateObj = moment(dateString);
+      if (dateObj.isValid()) {
+        return { 
+          date: dateObj.format("DD/MM/YYYY"), 
+          time: dateObj.format("hh:mm:ss A") 
+        };
+      }
+    }
+    return { date: moment(dateString).format("DD/MM/YYYY"), time: "-" };
+  }
+  
+  return { date: "-", time: "-" };
+};
 
   return (
     <div>
@@ -471,6 +513,7 @@ const QueryTracker = () => {
                     <TableHeaderColumn width='200' dataField='userSearchQuery' dataFormat={Period} dataSort={true}>Period</TableHeaderColumn>
                     <TableHeaderColumn width='75' dataField='totalRecords' dataSort={true}>Total Records</TableHeaderColumn>
                     <TableHeaderColumn width='100' dataField='createdDate' dataFormat={CreatedDate} dataSort={true}>Created Date</TableHeaderColumn>
+                    <TableHeaderColumn width='120' dataField='createdTimeOnly' dataSort={true}>Created Time</TableHeaderColumn>
                     <TableHeaderColumn width="200" dataField="combinedColumn" dataFormat={combineColumns} dataSort={true}>Created By</TableHeaderColumn>
                   </BootstrapTable>
 

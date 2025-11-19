@@ -208,12 +208,24 @@ const DownloadTracker = () => {
       },
     })
       .then((res) => {
-       // console.log("Download URL", url);
-       // console.log("Download List", res.data.queryList);
-       // console.log("Download Data Length ", res.data.queryList?.length || 0);
-        
-        const queryData = res.data.queryList || [];
-        setQueryList(queryData);
+       
+      const queryData = res.data.queryList || [];
+        //console.log("Download List Response Data:", queryData);
+
+        // Format the data with date/time separation using downloadedDate
+        const formattedList = queryData.map((item, index) => {
+          const downloaded = formatDateTime(item.downloadedDate || item.createdDate);
+
+          return {
+            ...item,
+            // Ensure we have a unique key field
+            searchId: item.searchId || `download-${page}-${index}`,
+            downloadedDateOnly: downloaded.date,
+            downloadedTimeOnly: downloaded.time
+          };
+        });
+
+        setQueryList(formattedList);
         setCurrentPage(page);
         
         // If no data is returned, make sure count is also 0
@@ -326,6 +338,36 @@ const DownloadTracker = () => {
   
       setFieldValue(field, value);
     };
+
+
+    const formatDateTime = (dateString) => {
+  // If dateString contains a full ISO datetime, parse it
+  if (dateString && (dateString.includes('T') || dateString.includes('Z'))) {
+    const dateObj = moment(dateString);
+    if (dateObj.isValid()) {
+      return { 
+        date: dateObj.format("DD/MM/YYYY"), 
+        time: dateObj.format("hh:mm A") 
+      };
+    }
+  }
+  
+  // Handle single date string
+  if (dateString) {
+    if (dateString.includes('T') || dateString.includes(' ')) {
+      const dateObj = moment(dateString);
+      if (dateObj.isValid()) {
+        return { 
+          date: dateObj.format("DD/MM/YYYY"), 
+          time: dateObj.format("hh:mm:ss A") 
+        };
+      }
+    }
+    return { date: moment(dateString).format("DD/MM/YYYY"), time: "-" };
+  }
+  
+  return { date: "-", time: "-" };
+};
 
   return (
     <div>
@@ -526,6 +568,7 @@ const DownloadTracker = () => {
                     <TableHeaderColumn width="210" dataField="userSearchQuery" dataFormat={Period} dataSort={true}>Period</TableHeaderColumn>
                     <TableHeaderColumn width="75" dataField="totalRecords" dataSort={true}>Total Records</TableHeaderColumn>
                     <TableHeaderColumn width="100" dataField="createdDate" dataFormat={CreatedDate} dataSort={true}>Downloaded on</TableHeaderColumn>
+                        <TableHeaderColumn width="120" dataField="downloadedTimeOnly" dataSort={true}>Downloaded Time</TableHeaderColumn>
                     <TableHeaderColumn width="200" dataField="combinedColumn" dataFormat={combineColumns} dataSort={true}>Downloaded By</TableHeaderColumn>
                     <TableHeaderColumn width="100" dataField="recordsDownloaded" dataSort={true}>Records Downloaded</TableHeaderColumn>
                   </BootstrapTable>
