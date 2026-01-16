@@ -30,7 +30,7 @@ const LoginTracker = () => {
   const [sortName, setSortName] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(20); // 20 records per page
   const [filterUserId, setFilterUserId] = useState("");
   const [filterFromDate, setFilterFromDate] = useState("");
@@ -65,13 +65,13 @@ const LoginTracker = () => {
       url += `?${params.toString()}`;
     }
 
-    //console.log("Login Count URL:", url);
+    console.log("Login Count URL:", url);
 
     AxiosUser({
       method: "GET",
       url: url,
     }).then((res) => {
-        //console.log("Login Count Res > >>", res);
+        console.log("Login Count Res > >>", res);
         if (res.status === 200) {
           // Handle different response structures for login count
           let count = 0;
@@ -89,10 +89,10 @@ const LoginTracker = () => {
             count = res.data || 0;
           }
           
-         // console.log("Setting login total count to:", count);
+          console.log("Setting login total count to:", count);
           setTotalCount(count);
         } else {
-         // console.log("Non-200 response, setting count to 0");
+          console.log("Non-200 response, setting count to 0");
           setTotalCount(0);
         }
       })
@@ -105,7 +105,7 @@ const LoginTracker = () => {
 
   useEffect(() => {
     getUsers();
-    handleSubmitWithPage("", "", "", 1);
+    handleSubmitWithPage("", "", "", 0);
     getTotalCount();
   }, []);
 
@@ -131,7 +131,7 @@ const LoginTracker = () => {
     // Reset count before making new requests
     setTotalCount(0);
     
-    handleSubmitWithPage(values.userId, values.fromDate, values.toDate, 1);
+    handleSubmitWithPage(values.userId, values.fromDate, values.toDate, 0);
     getTotalCount(values.userId, values.fromDate, values.toDate);
   };
 
@@ -202,7 +202,7 @@ const LoginTracker = () => {
     
     url = `/user-management/user/loginlist?${params.toString()}`;
 
-   // console.log("Login List URL:", url);
+    console.log("Login List URL:", url);
 
     AxiosUser({
       method: "GET",
@@ -212,8 +212,8 @@ const LoginTracker = () => {
       },
     })
       .then((res) => {
-        //console.log("URL", url);
-        //console.log("Login List", res.data);
+        console.log("URL", url);
+        console.log("Login List", res.data);
         
         let loginData = [];
         if (res.data.loginList) {
@@ -224,7 +224,7 @@ const LoginTracker = () => {
           loginData = res.data.data;
         }
 
-        //console.log("Data Length ", loginData?.length || 0);
+        console.log("Data Length ", loginData?.length || 0);
 
         // Format the data with date/time separation
         const formattedList = loginData.map((item, index) => {
@@ -247,12 +247,12 @@ const LoginTracker = () => {
 
         // If no data is returned, make sure count is also 0
         if (loginData.length === 0 && page === 1) {
-          //console.log("No data found, ensuring count is 0");
+          console.log("No data found, ensuring count is 0");
           setTotalCount(0);
         }
       })
       .catch((err) => {
-       // console.log("Err", err);
+        console.log("Err", err);
         setLoginList([]);
         // Reset count to 0 when there's an error
         setTotalCount(0);
@@ -263,7 +263,7 @@ const LoginTracker = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page > 0 && page <= Math.ceil(totalCount / pageSize)) {
+    if (page >= 0 && page <= Math.ceil(totalCount / pageSize)) {
       handleSubmitWithPage(filterUserId, filterFromDate, filterToDate, page);
     }
   };
@@ -289,7 +289,7 @@ const LoginTracker = () => {
   };
 
   const indexN = (cell, row, enumObject, index) => {
-    return <div>{(currentPage - 1) * pageSize + index + 1}</div>;
+    return <div>{currentPage * pageSize + index + 1}</div>;
   };
 
   const options = {
@@ -510,7 +510,7 @@ const LoginTracker = () => {
                         // Reset count before making new requests
                         setTotalCount(0);
                         
-                        handleSubmitWithPage("", defaultFromDate, defaultToDate, 1);
+                        handleSubmitWithPage("", defaultFromDate, defaultToDate, 0);
                         getTotalCount("", defaultFromDate, defaultToDate);
                       }}
                       className="btn btn-outline-secondary fw-semibold shadow-sm w-100 d-flex align-items-center justify-content-center"
@@ -576,7 +576,7 @@ const LoginTracker = () => {
                         <button
                           className="btn btn-sm btn-outline-primary me-1"
                           disabled={currentPage === 1}
-                          onClick={() => handlePageChange(1)}
+                          onClick={() => handlePageChange(0)}
                           style={{ marginRight: '5px' }}
                           title="First Page"
                         >
@@ -585,7 +585,7 @@ const LoginTracker = () => {
 
                         <button
                           className="btn btn-sm btn-outline-primary"
-                          disabled={currentPage === 1}
+                          disabled={currentPage === 0}
                           onClick={() => handlePageChange(currentPage - 1)}
                           style={{ marginRight: '5px' }}
                           title="Previous Page"
@@ -616,7 +616,7 @@ const LoginTracker = () => {
 
                         <button
                           className="btn btn-sm btn-outline-primary"
-                          disabled={currentPage === totalPages}
+                          disabled={currentPage === totalPages-1}
                           onClick={() => handlePageChange(currentPage + 1)}
                           style={{ marginRight: '5px' }}
                           title="Next Page"
@@ -627,7 +627,7 @@ const LoginTracker = () => {
                         <button
                           className="btn btn-sm btn-outline-primary"
                           disabled={currentPage === totalPages}
-                          onClick={() => handlePageChange(totalPages)}
+                          onClick={() => handlePageChange(totalPages-1)}
                           title="Last Page"
                         >
                           Last <i className="fas fa-angle-double-right"></i>
