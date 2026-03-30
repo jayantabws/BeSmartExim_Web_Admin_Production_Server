@@ -144,31 +144,26 @@ country: Array.isArray(item.userSearchQuery?.countryCode)
                   </tr>
                 </thead>
 
-                <tbody>
-                  {downloadList}
-                  {downloadList.length > 0 ? (
-                    downloadList.map((item, index) => (
-                      <tr key={item.id}>
-                        <td>{currentPage * pageSize + index + 1}</td>
-                        <td>{item.query}</td>
-                        <td>{item.tradeType}</td>
-                        <td>{item.country}</td>
-                        <td>{item.period}</td>
-                        <td>{item.totalRecords}</td>
-                        <td>{item.downloadedDateOnly}</td>
-                        <td>{item.downloadedTimeOnly}</td>
-                        <td>{item.downloadedBy}</td>
-                        <td>{item.recordsDownloaded}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="10" className="text-center">
-                        No Data Found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+             
+
+
+                         <tbody>
+  {downloadList.map((item,index) => (
+    <tr key={item.id}>
+
+      <td>{currentPage * pageSize + index + 1}</td>
+      <td>{item.tradeType}</td>
+      <td>{item.query}</td>
+      <td>{item.country}</td>
+      <td>{item.period}</td>
+      <td>{item.totalRecords}</td>
+      <td>{item.downloadedDateOnly}</td>
+      <td>{item.downloadedTimeOnly}</td>
+      <td>{item.downloadedBy}</td>
+      <td>{item.recordsDownloaded}</td>
+    </tr>
+  ))}
+</tbody>
               </table>
             </div>
 
