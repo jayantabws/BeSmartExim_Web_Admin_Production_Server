@@ -12,13 +12,14 @@ const UpdatePermission = (props) => {
       setMyPermissionData({
         id: props.permissionData.id,
         userId: props.permissionData.userId,
-         users: props.permissionData.users === "Y" ? "Y" : "N",
+        users: props.permissionData.users === "Y" ? "Y" : "N",
         adminUsers: props.permissionData.adminUsers === "Y" ? "Y" : "N",
         subscriptions: props.permissionData.subscriptions === "Y" ? "Y" : "N",
         activityLog: props.permissionData.activityLog === "Y" ? "Y" : "N",
         countries: props.permissionData.countries === "Y" ? "Y" : "N",
         contacts: props.permissionData.contacts === "Y" ? "Y" : "N",
-        siteSettings: props.permissionData.siteSettings === "Y" ? "Y" : "N"
+        siteSettings: props.permissionData.siteSettings === "Y" ? "Y" : "N",
+        userTracker:props.permissionData.userTracker==="Y" ? "Y" : "N"
       });
     }
   }, [props.permissionData]);
@@ -49,6 +50,7 @@ const UpdatePermission = (props) => {
       }
     })
       .then((res) => {
+        console.log("RES",res);
         Swal.fire({
           title: "Success",
           text: "Admin Permission updated successfully",
@@ -79,7 +81,8 @@ const UpdatePermission = (props) => {
     { key: "activityLog", label: "Activity Log" },
     { key: "countries", label: "Countries" },
     { key: "contacts", label: "Contacts" },
-    { key: "siteSettings", label: "Site Settings" }
+    { key: "siteSettings", label: "Site Settings" },
+    {key:"userTracker",label: "User Tracker"}
   ];
 
   return (
