@@ -69,7 +69,7 @@ export default function Login() {
   };
 
   useEffect(()=>{
-    getData()
+    getData();
     const userToken = sessionStorage.getItem("userToken");
     console.log("userToken", userToken);
     if(userToken){
